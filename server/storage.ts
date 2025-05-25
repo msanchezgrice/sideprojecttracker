@@ -176,9 +176,9 @@ export class DatabaseStorage implements IStorage {
       .update(projects)
       .set({
         ...updates,
-        githubUrl: updates.githubUrl || null,
-        liveUrl: updates.liveUrl || null,
-        docsUrl: updates.docsUrl || null,
+        githubUrl: updates.githubUrl ? updates.githubUrl : null,
+        liveUrl: updates.liveUrl ? updates.liveUrl : null,
+        docsUrl: updates.docsUrl ? updates.docsUrl : null,
         lastActivity: new Date(),
       })
       .where(eq(projects.id, id))
