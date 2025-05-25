@@ -23,9 +23,10 @@ interface AIUpdatesDialogProps {
   onOpenChange: (open: boolean) => void;
   projectName: string;
   updateCount: number;
+  onCountChange?: (newCount: number) => void;
 }
 
-export default function AIUpdatesDialog({ open, onOpenChange, projectName, updateCount }: AIUpdatesDialogProps) {
+export default function AIUpdatesDialog({ open, onOpenChange, projectName, updateCount, onCountChange }: AIUpdatesDialogProps) {
   const [selectedUpdate, setSelectedUpdate] = useState<AIUpdate | null>(null);
   const [detailModalOpen, setDetailModalOpen] = useState(false);
 
@@ -82,9 +83,14 @@ export default function AIUpdatesDialog({ open, onOpenChange, projectName, updat
   ]);
 
   const handleDismiss = (updateId: string) => {
-    setUpdates(updates.map(update => 
+    const newUpdates = updates.map(update => 
       update.id === updateId ? { ...update, status: "dismissed" as const } : update
-    ));
+    );
+    setUpdates(newUpdates);
+    
+    // Update the count in parent component
+    const newPendingCount = newUpdates.filter(update => update.status === "pending").length;
+    onCountChange?.(newPendingCount);
   };
 
   const handleLearnMore = (update: AIUpdate) => {
