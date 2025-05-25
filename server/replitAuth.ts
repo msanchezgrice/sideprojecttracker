@@ -8,7 +8,9 @@ import memoize from "memoizee";
 import connectPg from "connect-pg-simple";
 import { storage } from "./storage";
 
-if (!process.env.REPLIT_DOMAINS) {
+// Set default domain for development if not provided
+const defaultDomains = process.env.REPLIT_DOMAINS || "project-pulse-miguelsanchez-g.replit.app";
+if (!defaultDomains) {
   throw new Error("Environment variable REPLIT_DOMAINS not provided");
 }
 
@@ -84,8 +86,7 @@ export async function setupAuth(app: Express) {
     verified(null, user);
   };
 
-  for (const domain of process.env
-    .REPLIT_DOMAINS!.split(",")) {
+  for (const domain of defaultDomains.split(",")) {
     const strategy = new Strategy(
       {
         name: `replitauth:${domain}`,
