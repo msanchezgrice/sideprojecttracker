@@ -19,12 +19,12 @@ function Router() {
   const { isAuthenticated, isLoading, user } = useAuth();
   
   // Check if user has projects to determine if they need onboarding
-  const { data: projects = [] } = useQuery<Project[]>({
+  const { data: projects = [], isLoading: projectsLoading } = useQuery<Project[]>({
     queryKey: ["/api/projects"],
     enabled: isAuthenticated,
   });
   
-  const needsOnboarding = isAuthenticated && projects.length === 0;
+  const needsOnboarding = isAuthenticated && !projectsLoading && projects.length === 0;
 
   if (isLoading) {
     return (
