@@ -26,7 +26,7 @@ function Router() {
   
   const needsOnboarding = isAuthenticated && !projectsLoading && projects.length === 0;
 
-  if (isLoading) {
+  if (isLoading || projectsLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center">
         <div className="text-center">
@@ -48,7 +48,7 @@ function Router() {
       ) : needsOnboarding ? (
         <>
           <Route path="/onboarding" component={Onboarding} />
-          <Route path="*" component={() => { window.location.href = "/onboarding"; return null; }} />
+          <Route component={Onboarding} />
         </>
       ) : (
         <Layout>

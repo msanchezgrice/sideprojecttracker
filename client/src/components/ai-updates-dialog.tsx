@@ -30,8 +30,8 @@ export default function AIUpdatesDialog({ open, onOpenChange, projectName, updat
   const [selectedUpdate, setSelectedUpdate] = useState<AIUpdate | null>(null);
   const [detailModalOpen, setDetailModalOpen] = useState(false);
 
-  // Mock AI updates data - in a real app this would come from your API
-  const [updates, setUpdates] = useState<AIUpdate[]>([
+  // Show empty array for zero state - no placeholder data
+  const [updates, setUpdates] = useState<AIUpdate[]>([]);
     {
       id: "1",
       type: "optimization" as const,

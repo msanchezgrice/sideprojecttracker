@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
 import Layout from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +26,8 @@ import {
 } from "lucide-react";
 
 export default function Settings() {
+  const { user } = useAuth();
+  
   const [notifications, setNotifications] = useState({
     projectUpdates: true,
     costAlerts: false,
@@ -68,16 +71,25 @@ export default function Settings() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="name">Full Name</Label>
-                    <Input id="name" placeholder="Your full name" defaultValue="Project Manager" />
+                    <Input 
+                      id="name" 
+                      placeholder="Your full name" 
+                      defaultValue={user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Not provided' : ''} 
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">Email Address</Label>
-                    <Input id="email" type="email" placeholder="your@email.com" defaultValue="manager@vibecodehq.com" />
+                    <Input 
+                      id="email" 
+                      type="email" 
+                      placeholder="your@email.com" 
+                      defaultValue={user?.email || ''} 
+                    />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="bio">Bio</Label>
-                  <Input id="bio" placeholder="Tell us about yourself" defaultValue="Managing awesome VibeCode projects" />
+                  <Input id="bio" placeholder="Tell us about yourself" defaultValue="" />
                 </div>
                 <Button>Update Profile</Button>
               </CardContent>
