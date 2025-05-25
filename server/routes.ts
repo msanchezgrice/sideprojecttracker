@@ -14,13 +14,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/auth/guest-login', async (req, res) => {
     try {
       const { email, password } = req.body;
+      console.log("Guest login attempt:", { email, password });
       
       // Simple guest accounts for testing
-      const guestAccounts = {
+      const guestAccounts: Record<string, string> = {
         'guest@sidepilot.com': 'password123',
         'demo@doodad.ai': 'demo123',
         'test@sidepilot.com': 'test123'
       };
+      
+      console.log("Available accounts:", Object.keys(guestAccounts));
+      console.log("Password match:", guestAccounts[email] === password);
       
       if (guestAccounts[email] === password) {
         // Create a simple session
@@ -33,9 +37,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
         
         // Set simple session
-        req.session.user = user;
+        (req.session as any).user = user;
+        console.log("Login successful for:", email);
         res.json({ success: true, user });
       } else {
+        console.log("Login failed - credential mismatch");
         res.status(401).json({ message: "Invalid credentials" });
       }
     } catch (error) {
