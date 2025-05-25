@@ -46,7 +46,10 @@ function Router() {
           <Route component={Landing} />
         </>
       ) : needsOnboarding ? (
-        <Route path="*" component={Onboarding} />
+        <>
+          <Route path="/onboarding" component={Onboarding} />
+          <Route path="*" component={() => { window.location.href = "/onboarding"; return null; }} />
+        </>
       ) : (
         <Layout>
           <Route path="/" component={Dashboard} />
