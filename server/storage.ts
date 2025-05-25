@@ -17,14 +17,31 @@ export interface IStorage {
 
 export class MemStorage implements IStorage {
   private projects: Map<number, Project>;
+  private users: Map<string, User>;
   private currentId: number;
 
   constructor() {
     this.projects = new Map();
+    this.users = new Map();
     this.currentId = 1;
     
     // Initialize with some sample data for demonstration
     this.initializeSampleData();
+  }
+
+  // User operations for Replit Auth
+  async getUser(id: string): Promise<User | undefined> {
+    return this.users.get(id);
+  }
+
+  async upsertUser(userData: UpsertUser): Promise<User> {
+    const user: User = {
+      ...userData,
+      createdAt: this.users.get(userData.id)?.createdAt || new Date(),
+      updatedAt: new Date(),
+    };
+    this.users.set(userData.id, user);
+    return user;
   }
 
   private initializeSampleData() {
@@ -41,6 +58,7 @@ export class MemStorage implements IStorage {
         liveUrl: "https://vibecrm.demo.com",
         docsUrl: "https://docs.vibecrm.com",
         createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // 30 days ago
+        userId: "demo-user"
       },
       {
         name: "AI Content Generator",

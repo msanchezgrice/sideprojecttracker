@@ -33,6 +33,7 @@ function Router() {
         <>
           <Route path="/" component={Landing} />
           <Route path="/onboarding" component={Onboarding} />
+          <Route component={Landing} />
         </>
       ) : (
         <Layout>
