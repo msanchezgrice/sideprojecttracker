@@ -122,10 +122,10 @@ export default function ProjectCard({ project, rank }: ProjectCardProps) {
         <CardContent className="p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-4">
-            <div className={`flex items-center justify-center w-10 h-10 ${getRankBadge(rank)} rounded-lg text-white font-bold text-lg`}>
-              {rank}
-            </div>
-            <div>
+              <div className={`flex items-center justify-center w-10 h-10 ${getRankBadge(rank)} rounded-lg text-white font-bold text-lg`}>
+                {rank}
+              </div>
+              <div>
               <h3 className="text-xl font-semibold text-slate-900">{project.name}</h3>
               <p className="text-slate-600">{project.description}</p>
             </div>

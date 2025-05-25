@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "wouter";
 import { Project } from "@shared/schema";
 import StatsOverview from "@/components/stats-overview";
 import FilterControls from "@/components/filter-controls";
@@ -59,10 +60,10 @@ export default function Dashboard() {
                 <h1 className="text-xl font-bold text-slate-900">ProjectRank</h1>
               </div>
               <nav className="hidden md:flex space-x-6">
-                <a href="#" className="text-indigo-600 font-medium">Dashboard</a>
-                <a href="#" className="text-slate-600 hover:text-slate-900">Projects</a>
-                <a href="#" className="text-slate-600 hover:text-slate-900">Analytics</a>
-                <a href="#" className="text-slate-600 hover:text-slate-900">Settings</a>
+                <Link href="/" className="text-indigo-600 font-medium">Dashboard</Link>
+                <Link href="/projects" className="text-slate-600 hover:text-slate-900">Projects</Link>
+                <Link href="/analytics" className="text-slate-600 hover:text-slate-900">Analytics</Link>
+                <Link href="/settings" className="text-slate-600 hover:text-slate-900">Settings</Link>
               </nav>
             </div>
             <div className="flex items-center space-x-4">
