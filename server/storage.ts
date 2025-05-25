@@ -1,4 +1,6 @@
 import { projects, type Project, type InsertProject } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   getProjects(): Promise<Project[]>;
@@ -145,4 +147,56 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export class DatabaseStorage implements IStorage {
+  async getProjects(): Promise<Project[]> {
+    const result = await db.select().from(projects);
+    return result;
+  }
+
+  async getProject(id: number): Promise<Project | undefined> {
+    const [project] = await db.select().from(projects).where(eq(projects.id, id));
+    return project || undefined;
+  }
+
+  async createProject(insertProject: InsertProject): Promise<Project> {
+    const [project] = await db
+      .insert(projects)
+      .values({
+        ...insertProject,
+        githubUrl: insertProject.githubUrl || null,
+        liveUrl: insertProject.liveUrl || null,
+        docsUrl: insertProject.docsUrl || null,
+      })
+      .returning();
+    return project;
+  }
+
+  async updateProject(id: number, updates: Partial<InsertProject>): Promise<Project | undefined> {
+    const [updatedProject] = await db
+      .update(projects)
+      .set({
+        ...updates,
+        githubUrl: updates.githubUrl || null,
+        liveUrl: updates.liveUrl || null,
+        docsUrl: updates.docsUrl || null,
+        lastActivity: new Date(),
+      })
+      .where(eq(projects.id, id))
+      .returning();
+    return updatedProject || undefined;
+  }
+
+  async deleteProject(id: number): Promise<boolean> {
+    const result = await db.delete(projects).where(eq(projects.id, id));
+    return result.rowCount ? result.rowCount > 0 : false;
+  }
+
+  async updateLastActivity(id: number): Promise<void> {
+    await db
+      .update(projects)
+      .set({ lastActivity: new Date() })
+      .where(eq(projects.id, id));
+  }
+}
+
+export const storage = new DatabaseStorage();
