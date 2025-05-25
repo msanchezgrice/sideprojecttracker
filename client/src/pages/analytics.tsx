@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Project } from "@shared/schema";
+import Layout from "@/components/layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -53,7 +54,7 @@ export default function Analytics() {
     .slice(0, 5);
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <Layout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-slate-900 mb-2">Analytics Dashboard</h1>
@@ -328,6 +329,6 @@ export default function Analytics() {
           </TabsContent>
         </Tabs>
       </div>
-    </div>
+    </Layout>
   );
 }
