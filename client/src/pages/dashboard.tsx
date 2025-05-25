@@ -52,40 +52,23 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 font-inter">
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-trophy text-white text-sm"></i>
-                </div>
-                <h1 className="text-xl font-bold text-slate-900">ProjectRank</h1>
-              </div>
-              <nav className="hidden md:flex space-x-6">
-                <Link href="/" className="text-indigo-600 font-medium">Dashboard</Link>
-                <Link href="/projects" className="text-slate-600 hover:text-slate-900">Projects</Link>
-                <Link href="/analytics" className="text-slate-600 hover:text-slate-900">Analytics</Link>
-                <Link href="/settings" className="text-slate-600 hover:text-slate-900">Settings</Link>
-              </nav>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Button 
-                onClick={() => setIsProjectFormOpen(true)}
-                className="bg-indigo-600 hover:bg-indigo-700"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                New Project
-              </Button>
-              <div className="w-8 h-8 bg-slate-300 rounded-full" />
-            </div>
-          </div>
-        </div>
-      </header>
-
+    <div className="bg-slate-50 font-inter">
+      {/* Dashboard Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900">Project Dashboard</h1>
+            <p className="text-slate-600 mt-1">Manage and track your development projects</p>
+          </div>
+          <Button 
+            onClick={() => setIsProjectFormOpen(true)}
+            className="bg-indigo-600 hover:bg-indigo-700"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            New Project
+          </Button>
+        </div>
+        
         <StatsOverview />
 
         {/* Filter Controls */}

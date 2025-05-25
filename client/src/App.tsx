@@ -27,12 +27,9 @@ function Router() {
     );
   }
 
-  // Temporarily bypass auth for development - remove this once auth is working
-  const isDevelopment = true;
-
   return (
     <Switch>
-      {!isAuthenticated && !isDevelopment ? (
+      {!isAuthenticated ? (
         <>
           <Route path="/" component={Landing} />
           <Route path="/onboarding" component={Onboarding} />
