@@ -4,6 +4,8 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/useAuth";
+import { useQuery } from "@tanstack/react-query";
+import { Project } from "@shared/schema";
 import Dashboard from "@/pages/dashboard";
 import Projects from "@/pages/projects";
 import Analytics from "@/pages/analytics";
@@ -14,7 +16,15 @@ import NotFound from "@/pages/not-found";
 import Layout from "@/components/layout";
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, user } = useAuth();
+  
+  // Check if user has projects to determine if they need onboarding
+  const { data: projects = [] } = useQuery<Project[]>({
+    queryKey: ["/api/projects"],
+    enabled: isAuthenticated,
+  });
+  
+  const needsOnboarding = isAuthenticated && projects.length === 0;
 
   if (isLoading) {
     return (
@@ -35,6 +45,8 @@ function Router() {
           <Route path="/onboarding" component={Onboarding} />
           <Route component={Landing} />
         </>
+      ) : needsOnboarding ? (
+        <Route path="*" component={Onboarding} />
       ) : (
         <Layout>
           <Route path="/" component={Dashboard} />
@@ -42,7 +54,6 @@ function Router() {
           <Route path="/projects" component={Projects} />
           <Route path="/analytics" component={Analytics} />
           <Route path="/settings" component={Settings} />
-          <Route path="/onboarding" component={Onboarding} />
           <Route path="/landing" component={Landing} />
         </Layout>
       )}

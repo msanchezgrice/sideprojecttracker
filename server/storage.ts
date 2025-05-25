@@ -34,13 +34,40 @@ export class MemStorage implements IStorage {
   }
 
   async upsertUser(userData: UpsertUser): Promise<User> {
+    const isNewUser = !this.users.has(userData.id);
     const user: User = {
       ...userData,
       createdAt: this.users.get(userData.id)?.createdAt || new Date(),
       updatedAt: new Date(),
     };
     this.users.set(userData.id, user);
+    
+    // Create one example project for new users
+    if (isNewUser) {
+      this.createExampleProject(userData.id);
+    }
+    
     return user;
+  }
+
+  private createExampleProject(userId: string) {
+    const id = this.currentId++;
+    const exampleProject: Project = {
+      id,
+      userId,
+      name: "SidePilot - Demo Project",
+      description: "Your AI co-pilot for managing multiple projects. This is an example project to show you how SidePilot works.",
+      status: "active",
+      progress: 85,
+      monthlyCost: 2400, // $24.00 in cents
+      lastActivity: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
+      aiUpdates: 2,
+      githubUrl: "https://github.com/replit/project-pulse",
+      liveUrl: "https://doodad.ai",
+      docsUrl: "https://docs.doodad.ai",
+      createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 7 days ago
+    };
+    this.projects.set(id, exampleProject);
   }
 
   private initializeSampleData() {
