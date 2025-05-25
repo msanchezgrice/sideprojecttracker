@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertProjectSchema } from "@shared/schema";
 import { z } from "zod";
+import puppeteer from "puppeteer";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Get all projects with optional sorting
@@ -149,6 +150,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch statistics" });
+    }
+  });
+
+  // Capture website screenshot
+  app.get("/api/screenshot", async (req, res) => {
+    try {
+      const { url } = req.query;
+      
+      if (!url || typeof url !== "string") {
+        return res.status(400).json({ message: "URL parameter is required" });
+      }
+
+      // Validate URL format
+      try {
+        new URL(url);
+      } catch {
+        return res.status(400).json({ message: "Invalid URL format" });
+      }
+
+      const browser = await puppeteer.launch({
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
+      });
+      
+      const page = await browser.newPage();
+      await page.setViewport({ width: 1200, height: 800 });
+      
+      // Set timeout and navigate
+      await page.goto(url, { 
+        waitUntil: 'networkidle2',
+        timeout: 10000 
+      });
+      
+      // Take screenshot
+      const screenshot = await page.screenshot({ 
+        type: 'png',
+        fullPage: false
+      });
+      
+      await browser.close();
+      
+      // Return screenshot as base64 data URL
+      const base64Screenshot = `data:image/png;base64,${screenshot.toString('base64')}`;
+      res.json({ screenshot: base64Screenshot });
+      
+    } catch (error) {
+      console.error("Screenshot error:", error);
+      res.status(500).json({ 
+        message: "Failed to capture screenshot",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
     }
   });
 
