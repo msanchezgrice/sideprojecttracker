@@ -25,8 +25,7 @@ export class MemStorage implements IStorage {
     this.users = new Map();
     this.currentId = 1;
     
-    // Initialize with some sample data for demonstration
-    this.initializeSampleData();
+    // Start clean - no sample data for new users
   }
 
   // User operations for Replit Auth
