@@ -1,0 +1,16 @@
+3. Landing Page Copy
+
+Headline: “All Your Projects. One Dashboard. Your AI Co‑Pilot for Code Projects.”
+
+Subheadline: Tired of losing track of side projects or digging through scattered docs? SidePilot brings everything together in one place, with an AI assistant to help your projects soar. It’s the ultimate control center for solo developers managing multiple code-based projects.
+
+Value Proposition (brief):
+	•	🗂 Unified Project Portfolio: View all your projects at a glance on a single dashboard – no more pieces spread across multiple apps or forgotten in a drawer ￼. SidePilot keeps your repos, docs, and key info neatly organized by project.
+	•	🔗 Integrated with Your Tools: Connect your GitHub and Notion (more integrations coming) to automatically sync code commits, docs, and notes. No manual copy-paste – changes in your tools reflect in SidePilot in real time.
+	•	🤖 Proactive AI Assistant: Let the AI monitor your projects and alert you with helpful insights. It’ll remind you when a project’s gone stale, suggest updates (e.g. “Dependency XYZ has a new version”), and even summarize progress after a burst of commits. It’s like an extra team member who never sleeps.
+	•	📊 Track Progress & Status: Know exactly where each project stands. SidePilot shows project status, recent activity, and progress metrics (e.g. completion percentage or last update date) so you can easily decide “what’s next.” A leaderboard can rank projects by last touched or furthest along, turning your backlog into a motivational overview.
+	•	💰 Monitor Spending: Keep an eye on expenses for each project – hosting fees, SaaS subscriptions, domain renewals – all in one spot. SidePilot aggregates your project costs so you won’t be surprised by bills. Set budget alerts or see which project is burning the most cash.
+
+CTA: “Ready to bring order to your project chaos?” Start your free trial of SidePilot today and let your new co-pilot help you ship faster. [Get Started – It’s Free].
+
+(By clicking Get Started, you’ll connect your first project in seconds – and finally have the clarity you’ve been missing.)

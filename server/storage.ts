@@ -1,11 +1,15 @@
-import { projects, type Project, type InsertProject } from "@shared/schema";
+import { projects, users, type Project, type InsertProject, type User, type UpsertUser } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 
 export interface IStorage {
-  getProjects(): Promise<Project[]>;
+  // User operations for Replit Auth
+  getUser(id: string): Promise<User | undefined>;
+  upsertUser(user: UpsertUser): Promise<User>;
+  // Project operations
+  getProjects(userId?: string): Promise<Project[]>;
   getProject(id: number): Promise<Project | undefined>;
-  createProject(project: InsertProject): Promise<Project>;
+  createProject(project: InsertProject, userId: string): Promise<Project>;
   updateProject(id: number, updates: Partial<InsertProject>): Promise<Project | undefined>;
   deleteProject(id: number): Promise<boolean>;
   updateLastActivity(id: number): Promise<void>;
@@ -199,4 +203,4 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
-export const storage = new DatabaseStorage();
+export const storage = new MemStorage();
