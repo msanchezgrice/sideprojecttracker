@@ -10,16 +10,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupAuth(app);
 
-  // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+  // Simple guest login for testing
+  app.post('/api/auth/guest-login', async (req, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json(user);
+      const { email, password } = req.body;
+      
+      // Simple guest accounts for testing
+      const guestAccounts = {
+        'guest@sidepilot.com': 'password123',
+        'demo@doodad.ai': 'demo123',
+        'test@sidepilot.com': 'test123'
+      };
+      
+      if (guestAccounts[email] === password) {
+        // Create a simple session
+        const user = await storage.upsertUser({
+          id: email.split('@')[0] + '-user',
+          email: email,
+          firstName: 'Guest',
+          lastName: 'User',
+          profileImageUrl: null
+        });
+        
+        // Set simple session
+        req.session.user = user;
+        res.json({ success: true, user });
+      } else {
+        res.status(401).json({ message: "Invalid credentials" });
+      }
+    } catch (error) {
+      console.error("Guest login error:", error);
+      res.status(500).json({ message: "Login failed" });
+    }
+  });
+
+  // Check if user is logged in (guest or OAuth)
+  app.get('/api/auth/user', async (req: any, res) => {
+    try {
+      // Check for guest session first
+      if (req.session?.user) {
+        return res.json(req.session.user);
+      }
+      
+      // Fall back to OAuth if available
+      if (req.user?.claims?.sub) {
+        const userId = req.user.claims.sub;
+        const user = await storage.getUser(userId);
+        return res.json(user);
+      }
+      
+      res.status(401).json({ message: "Unauthorized" });
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
     }
+  });
+
+  // Logout
+  app.post('/api/auth/logout', (req, res) => {
+    req.session.destroy(() => {
+      res.json({ success: true });
+    });
   });
 
   // Get all projects with optional sorting

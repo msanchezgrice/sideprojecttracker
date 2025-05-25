@@ -1,10 +1,38 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { ArrowRight, BarChart, Bot, DollarSign, GitBranch, Zap } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Landing() {
+  const [showGuestLogin, setShowGuestLogin] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { toast } = useToast();
+
   const handleGetStarted = () => {
     window.location.href = "/api/login";
+  };
+
+  const guestLoginMutation = useMutation({
+    mutationFn: (credentials: { email: string; password: string }) =>
+      apiRequest("POST", "/api/auth/guest-login", credentials),
+    onSuccess: () => {
+      toast({ title: "Welcome to SidePilot!", description: "Successfully logged in" });
+      window.location.reload();
+    },
+    onError: () => {
+      toast({ title: "Login failed", description: "Invalid credentials", variant: "destructive" });
+    },
+  });
+
+  const handleGuestLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    guestLoginMutation.mutate({ email, password });
   };
 
   return (
@@ -37,14 +65,70 @@ export default function Landing() {
             ultimate control center for solo developers managing multiple code-based projects.
           </p>
 
-          <Button 
-            onClick={handleGetStarted}
-            size="lg" 
-            className="bg-indigo-600 hover:bg-indigo-700 text-lg px-8 py-4"
-          >
-            Get Started – It's Free
-            <ArrowRight className="w-5 h-5 ml-2" />
-          </Button>
+          <div className="flex flex-col items-center space-y-4">
+            <Button 
+              onClick={handleGetStarted}
+              size="lg" 
+              className="bg-indigo-600 hover:bg-indigo-700 text-lg px-8 py-4"
+            >
+              Get Started – It's Free
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+
+            <Button 
+              onClick={() => setShowGuestLogin(!showGuestLogin)}
+              variant="outline"
+              size="lg" 
+              className="text-lg px-8 py-4"
+            >
+              Try Guest Demo
+            </Button>
+          </div>
+
+          {showGuestLogin && (
+            <Card className="max-w-md mx-auto mt-8">
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold mb-4">Guest Login</h3>
+                <form onSubmit={handleGuestLogin} className="space-y-4">
+                  <div>
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Try: guest@sidepilot.com"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="password">Password</Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Try: password123"
+                      required
+                    />
+                  </div>
+                  <Button 
+                    type="submit" 
+                    className="w-full"
+                    disabled={guestLoginMutation.isPending}
+                  >
+                    {guestLoginMutation.isPending ? "Logging in..." : "Login"}
+                  </Button>
+                </form>
+                <div className="mt-4 text-sm text-gray-600">
+                  <p className="font-medium">Demo Accounts:</p>
+                  <p>guest@sidepilot.com / password123</p>
+                  <p>demo@doodad.ai / demo123</p>
+                  <p>test@sidepilot.com / test123</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           <p className="text-sm text-gray-500 mt-4">
             By clicking Get Started, you'll connect your first project in seconds – and finally have the clarity you've been missing.
