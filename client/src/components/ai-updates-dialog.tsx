@@ -32,55 +32,6 @@ export default function AIUpdatesDialog({ open, onOpenChange, projectName, updat
 
   // Show empty array for zero state - no placeholder data
   const [updates, setUpdates] = useState<AIUpdate[]>([]);
-    {
-      id: "1",
-      type: "optimization" as const,
-      title: "Database Query Optimization",
-      description: "Consider adding an index on the 'user_id' column to improve query performance by 40%",
-      detailedDescription: "Adding a composite index on (user_id, created_at) will significantly improve the performance of user timeline queries. This optimization can reduce query execution time from 200ms to 80ms on average, especially beneficial for users with large amounts of data.",
-      impact: "High - 40% performance improvement on user queries",
-      difficulty: "easy" as const,
-      estimatedTime: "15 minutes",
-      timestamp: "2 hours ago",
-      status: "pending" as const
-    },
-    {
-      id: "2", 
-      type: "suggestion" as const,
-      title: "Code Refactoring Opportunity",
-      description: "The UserService class could be split into smaller, more focused services for better maintainability",
-      detailedDescription: "The current UserService class has grown to over 500 lines and handles multiple responsibilities including authentication, profile management, and notifications. Breaking this into UserAuthService, UserProfileService, and UserNotificationService would improve code maintainability and testability.",
-      impact: "Medium - Improved code maintainability and team velocity",
-      difficulty: "medium" as const,
-      estimatedTime: "2 hours",
-      timestamp: "5 hours ago",
-      status: "pending" as const
-    },
-    {
-      id: "3",
-      type: "fix" as const,
-      title: "Security Vulnerability",
-      description: "Update JWT token expiration to 15 minutes for better security",
-      detailedDescription: "Current JWT tokens have a 24-hour expiration which poses security risks. Reducing to 15 minutes with refresh token implementation will significantly improve security posture while maintaining user experience.",
-      impact: "High - Improved security against token theft",
-      difficulty: "medium" as const,
-      estimatedTime: "1 hour",
-      timestamp: "1 day ago",
-      status: "applied" as const
-    },
-    {
-      id: "4",
-      type: "feature" as const,
-      title: "UI Enhancement",
-      description: "Add loading states to improve user experience during API calls",
-      detailedDescription: "Many API calls lack proper loading indicators, causing users to think the app is frozen. Adding skeleton loaders and spinner components will provide clear feedback during data fetching operations.",
-      impact: "Medium - Better user experience and perceived performance",
-      difficulty: "easy" as const,
-      estimatedTime: "30 minutes",
-      timestamp: "2 days ago",
-      status: "dismissed" as const
-    }
-  ]);
 
   const handleDismiss = (updateId: string) => {
     const newUpdates = updates.map(update => 
