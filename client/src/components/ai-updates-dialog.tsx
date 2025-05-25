@@ -124,8 +124,8 @@ export default function AIUpdatesDialog({ open, onOpenChange, projectName, updat
         </DialogHeader>
 
         <div className="space-y-4">
-          {aiUpdates.length > 0 ? (
-            aiUpdates.map((update) => (
+          {pendingUpdates.length > 0 ? (
+            pendingUpdates.map((update) => (
               <Card key={update.id} className="border border-slate-200">
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between mb-3">
@@ -146,12 +146,21 @@ export default function AIUpdatesDialog({ open, onOpenChange, projectName, updat
                   
                   {update.status === "pending" && (
                     <div className="flex space-x-2 mt-3">
-                      <button className="text-xs bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition-colors">
-                        Apply
-                      </button>
-                      <button className="text-xs bg-slate-200 text-slate-700 px-3 py-1 rounded-md hover:bg-slate-300 transition-colors">
+                      <Button 
+                        size="sm" 
+                        onClick={() => handleLearnMore(update)}
+                        className="text-xs bg-blue-600 text-white hover:bg-blue-700"
+                      >
+                        Learn more
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => handleDismiss(update.id)}
+                        className="text-xs"
+                      >
                         Dismiss
-                      </button>
+                      </Button>
                     </div>
                   )}
                 </CardContent>
@@ -166,6 +175,69 @@ export default function AIUpdatesDialog({ open, onOpenChange, projectName, updat
           )}
         </div>
       </DialogContent>
+
+      {/* Detail Modal for Learn More */}
+      <Dialog open={detailModalOpen} onOpenChange={setDetailModalOpen}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center space-x-2">
+              <Info className="w-5 h-5 text-blue-600" />
+              <span>{selectedUpdate?.title}</span>
+              <Badge className={getTypeColor(selectedUpdate?.type || "")}>
+                {selectedUpdate?.type.charAt(0).toUpperCase()}{selectedUpdate?.type.slice(1)}
+              </Badge>
+            </DialogTitle>
+          </DialogHeader>
+
+          {selectedUpdate && (
+            <div className="space-y-6">
+              <div>
+                <h3 className="font-semibold text-lg mb-2">Overview</h3>
+                <p className="text-slate-600">{selectedUpdate.description}</p>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-lg mb-2">Detailed Analysis</h3>
+                <p className="text-slate-600 leading-relaxed">{selectedUpdate.detailedDescription}</p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-slate-50 p-4 rounded-lg">
+                  <h4 className="font-medium text-slate-900 mb-1">Impact</h4>
+                  <p className="text-sm text-slate-600">{selectedUpdate.impact}</p>
+                </div>
+                <div className="bg-slate-50 p-4 rounded-lg">
+                  <h4 className="font-medium text-slate-900 mb-1">Difficulty</h4>
+                  <div className="flex items-center space-x-2">
+                    <Badge variant={selectedUpdate.difficulty === "easy" ? "default" : selectedUpdate.difficulty === "medium" ? "secondary" : "destructive"}>
+                      {selectedUpdate.difficulty.charAt(0).toUpperCase()}{selectedUpdate.difficulty.slice(1)}
+                    </Badge>
+                  </div>
+                </div>
+                <div className="bg-slate-50 p-4 rounded-lg">
+                  <h4 className="font-medium text-slate-900 mb-1">Estimated Time</h4>
+                  <p className="text-sm text-slate-600">{selectedUpdate.estimatedTime}</p>
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-3">
+                <Button variant="outline" onClick={() => setDetailModalOpen(false)}>
+                  Close
+                </Button>
+                <Button 
+                  onClick={() => {
+                    handleDismiss(selectedUpdate.id);
+                    setDetailModalOpen(false);
+                  }}
+                  variant="outline"
+                >
+                  Dismiss
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </Dialog>
   );
 }
