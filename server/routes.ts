@@ -54,8 +54,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/auth/user', async (req: any, res) => {
     try {
       // Check for guest session first
-      if (req.session?.user) {
-        return res.json(req.session.user);
+      if ((req.session as any)?.user) {
+        return res.json((req.session as any).user);
       }
       
       // Fall back to OAuth if available
