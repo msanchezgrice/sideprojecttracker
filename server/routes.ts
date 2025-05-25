@@ -3,9 +3,12 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertProjectSchema } from "@shared/schema";
 import { z } from "zod";
+import { setupAuth, isAuthenticated } from "./replitAuth";
 import puppeteer from "puppeteer";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Auth middleware
+  await setupAuth(app);
   // Get all projects with optional sorting
   app.get("/api/projects", async (req, res) => {
     try {
@@ -53,10 +56,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Create a new project
-  app.post("/api/projects", async (req, res) => {
+  app.post("/api/projects", isAuthenticated, async (req: any, res) => {
     try {
       const validatedData = insertProjectSchema.parse(req.body);
-      const project = await storage.createProject(validatedData);
+      const userId = req.user.claims.sub;
+      const project = await storage.createProject(validatedData, userId);
       res.status(201).json(project);
     } catch (error) {
       if (error instanceof z.ZodError) {

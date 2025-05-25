@@ -128,11 +128,12 @@ export class MemStorage implements IStorage {
     return this.projects.get(id);
   }
 
-  async createProject(insertProject: InsertProject): Promise<Project> {
+  async createProject(insertProject: InsertProject, userId: string): Promise<Project> {
     const id = this.currentId++;
     const project: Project = {
       ...insertProject,
       id,
+      userId,
       lastActivity: new Date(),
       createdAt: new Date(),
     };

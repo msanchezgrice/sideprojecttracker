@@ -41,15 +41,36 @@ export const projects = pgTable("projects", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+export const notes = pgTable("notes", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  projectId: integer("project_id").references(() => projects.id),
+  content: text("content").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 // Relations
 export const userRelations = relations(users, ({ many }) => ({
   projects: many(projects),
+  notes: many(notes),
 }));
 
-export const projectRelations = relations(projects, ({ one }) => ({
+export const projectRelations = relations(projects, ({ one, many }) => ({
   user: one(users, {
     fields: [projects.userId],
     references: [users.id],
+  }),
+  notes: many(notes),
+}));
+
+export const noteRelations = relations(notes, ({ one }) => ({
+  user: one(users, {
+    fields: [notes.userId],
+    references: [users.id],
+  }),
+  project: one(projects, {
+    fields: [notes.projectId],
+    references: [projects.id],
   }),
 }));
 
@@ -69,7 +90,18 @@ export const insertProjectSchema = createInsertSchema(projects).omit({
   docsUrl: z.string().url().optional().or(z.literal("")),
 });
 
+export const insertNoteSchema = createInsertSchema(notes).omit({
+  id: true,
+  userId: true,
+  createdAt: true,
+}).extend({
+  content: z.string().min(1, "Note content is required"),
+  projectId: z.number().optional(),
+});
+
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
 export type InsertProject = z.infer<typeof insertProjectSchema>;
 export type Project = typeof projects.$inferSelect;
+export type InsertNote = z.infer<typeof insertNoteSchema>;
+export type Note = typeof notes.$inferSelect;
