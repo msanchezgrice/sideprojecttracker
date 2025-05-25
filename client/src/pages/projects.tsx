@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Project } from "@shared/schema";
+import Layout from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -60,7 +61,7 @@ export default function Projects() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <Layout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-slate-900 mb-2">All Projects</h1>
@@ -260,6 +261,6 @@ export default function Projects() {
           </div>
         )}
       </div>
-    </div>
+    </Layout>
   );
 }
