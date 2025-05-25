@@ -74,65 +74,9 @@ export default function Landing() {
               Get Started – It's Free
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
-
-            <Button 
-              onClick={() => setShowGuestLogin(!showGuestLogin)}
-              variant="outline"
-              size="lg" 
-              className="text-lg px-8 py-4"
-            >
-              Try Guest Demo
-            </Button>
           </div>
 
-          {showGuestLogin && (
-            <Card className="max-w-md mx-auto mt-8">
-              <CardContent className="p-6">
-                <h3 className="text-lg font-semibold mb-4">Guest Login</h3>
-                <form onSubmit={handleGuestLogin} className="space-y-4">
-                  <div>
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Try: guest@doodad.ai"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="password">Password</Label>
-                    <Input
-                      id="password"
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Try: password123"
-                      required
-                    />
-                  </div>
-                  <Button 
-                    type="submit" 
-                    className="w-full"
-                    disabled={guestLoginMutation.isPending}
-                  >
-                    {guestLoginMutation.isPending ? "Logging in..." : "Login"}
-                  </Button>
-                </form>
-                <div className="mt-4 text-sm text-gray-600">
-                  <p className="font-medium">Demo Accounts:</p>
-                  <p>guest@doodad.ai / password123</p>
-                  <p>demo@doodad.ai / demo123</p>
-                  <p>test@doodad.ai / test123</p>
-                  <p>user1@doodad.ai / user123</p>
-                  <p>user2@doodad.ai / user123</p>
-                  <p>admin@doodad.ai / admin123</p>
-                  <p>developer@doodad.ai / dev123</p>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+
 
           <p className="text-sm text-gray-500 mt-4">
             By clicking Get Started, you'll connect your first project in seconds – and finally have the clarity you've been missing.
