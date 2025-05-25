@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Project } from "@shared/schema";
 import Layout from "@/components/layout";
 import { Button } from "@/components/ui/button";
+import ProjectDetailDialog from "@/components/project-detail-dialog";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +15,8 @@ export default function Projects() {
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [detailDialogOpen, setDetailDialogOpen] = useState(false);
 
   const { data: projects = [], isLoading } = useQuery<Project[]>({
     queryKey: ["/api/projects"],
@@ -163,6 +166,17 @@ export default function Projects() {
                             </p>
                           </div>
                         </div>
+                        <div className="flex space-x-2 mt-4">
+                          <Button 
+                            size="sm" 
+                            onClick={() => {
+                              setSelectedProject(project);
+                              setDetailDialogOpen(true);
+                            }}
+                          >
+                            Open Project
+                          </Button>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -261,6 +275,12 @@ export default function Projects() {
           </div>
         )}
       </div>
+      
+      <ProjectDetailDialog
+        project={selectedProject}
+        open={detailDialogOpen}
+        onOpenChange={setDetailDialogOpen}
+      />
     </Layout>
   );
 }

@@ -27,6 +27,7 @@ export default function ProjectCard({ project, rank }: ProjectCardProps) {
   const { toast } = useToast();
   const [isUpdating, setIsUpdating] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
+  const [showAIUpdates, setShowAIUpdates] = useState(false);
 
   const formatCurrency = (cents: number) => {
     return `$${(cents / 100).toLocaleString()}`;

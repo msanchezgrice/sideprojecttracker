@@ -24,35 +24,35 @@ export default function AIUpdatesDialog({ open, onOpenChange, projectName, updat
   const aiUpdates: AIUpdate[] = [
     {
       id: "1",
-      type: "optimization",
+      type: "optimization" as const,
       title: "Database Query Optimization",
       description: "Consider adding an index on the 'user_id' column to improve query performance by 40%",
       timestamp: "2 hours ago",
-      status: "pending"
+      status: "pending" as const
     },
     {
       id: "2", 
-      type: "suggestion",
+      type: "suggestion" as const,
       title: "Code Refactoring Opportunity",
       description: "The UserService class could be split into smaller, more focused services for better maintainability",
       timestamp: "5 hours ago",
-      status: "pending"
+      status: "pending" as const
     },
     {
       id: "3",
-      type: "fix",
+      type: "fix" as const,
       title: "Security Vulnerability",
       description: "Update JWT token expiration to 15 minutes for better security",
       timestamp: "1 day ago",
-      status: "applied"
+      status: "applied" as const
     },
     {
       id: "4",
-      type: "feature",
+      type: "feature" as const,
       title: "UI Enhancement",
       description: "Add loading states to improve user experience during API calls",
       timestamp: "2 days ago",
-      status: "dismissed"
+      status: "dismissed" as const
     }
   ].slice(0, updateCount);
 
