@@ -5,7 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { MoreHorizontal, Github, ExternalLink, BookOpen, Play, Pause, Trash2, Globe } from "lucide-react";
+import { MoreHorizontal, Github, ExternalLink, BookOpen, Play, Pause, Trash2, Globe, Zap } from "lucide-react";
+import AIUpdatesDialog from "./ai-updates-dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
