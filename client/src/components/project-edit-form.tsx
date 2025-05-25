@@ -27,9 +27,9 @@ export default function ProjectEditForm({ project, onSuccess }: ProjectEditFormP
     defaultValues: {
       name: project.name,
       description: project.description,
-      status: project.status,
+      status: project.status as "planning" | "active" | "paused" | "completed" | "blocked",
       progress: project.progress,
-      monthlyCost: project.monthlyCost,
+      monthlyCost: Math.round(project.monthlyCost / 100), // Convert cents to dollars
       aiUpdates: project.aiUpdates,
       githubUrl: project.githubUrl || "",
       liveUrl: project.liveUrl || "",
@@ -58,7 +58,12 @@ export default function ProjectEditForm({ project, onSuccess }: ProjectEditFormP
   });
 
   const onSubmit = (data: InsertProject) => {
-    updateProjectMutation.mutate(data);
+    // Convert dollars back to cents for storage
+    const updatedData = {
+      ...data,
+      monthlyCost: data.monthlyCost * 100
+    };
+    updateProjectMutation.mutate(updatedData);
   };
 
   return (
