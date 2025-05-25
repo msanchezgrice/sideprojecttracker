@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { Project } from "@shared/schema";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { MoreHorizontal, Github, ExternalLink, BookOpen, Play, Pause, Trash2 } from "lucide-react";
+import { MoreHorizontal, Github, ExternalLink, BookOpen, Play, Pause, Trash2, Globe } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import ProjectDetailDialog from "./project-detail-dialog";
 
 interface ProjectCardProps {
   project: Project;
@@ -24,6 +25,7 @@ export default function ProjectCard({ project, rank }: ProjectCardProps) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [isUpdating, setIsUpdating] = useState(false);
+  const [showDetail, setShowDetail] = useState(false);
 
   const formatCurrency = (cents: number) => {
     return `$${(cents / 100).toLocaleString()}`;
@@ -106,6 +108,7 @@ export default function ProjectCard({ project, rank }: ProjectCardProps) {
 
   const handleOpenProject = () => {
     updateActivityMutation.mutate();
+    setShowDetail(true);
   };
 
   const handleToggleStatus = () => {
@@ -114,10 +117,11 @@ export default function ProjectCard({ project, rank }: ProjectCardProps) {
   };
 
   return (
-    <Card className="border-slate-200 hover:shadow-lg transition-all duration-200">
-      <CardContent className="p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-4">
+    <>
+      <Card className="border-slate-200 hover:shadow-lg transition-all duration-200">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-4">
             <div className={`flex items-center justify-center w-10 h-10 ${getRankBadge(rank)} rounded-lg text-white font-bold text-lg`}>
               {rank}
             </div>
@@ -243,7 +247,14 @@ export default function ProjectCard({ project, rank }: ProjectCardProps) {
             </Button>
           </div>
         </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+
+      <ProjectDetailDialog 
+        project={project}
+        open={showDetail}
+        onOpenChange={setShowDetail}
+      />
+    </>
   );
 }
