@@ -1,6 +1,9 @@
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Project } from "@shared/schema";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import ProjectEditForm from "./project-edit-form";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,7 +16,8 @@ import {
   DollarSign,
   TrendingUp,
   Bot,
-  Globe
+  Globe,
+  Edit
 } from "lucide-react";
 
 interface ProjectDetailDialogProps {
@@ -23,6 +27,22 @@ interface ProjectDetailDialogProps {
 }
 
 export default function ProjectDetailDialog({ project, open, onOpenChange }: ProjectDetailDialogProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  
+  // Screenshot query
+  const { data: screenshotData, isLoading: screenshotLoading } = useQuery({
+    queryKey: ["/api/screenshot", project?.liveUrl],
+    queryFn: async () => {
+      if (!project?.liveUrl) return null;
+      const response = await fetch(`/api/screenshot?url=${encodeURIComponent(project.liveUrl)}`);
+      if (!response.ok) throw new Error('Failed to capture screenshot');
+      const data = await response.json();
+      return data.screenshot;
+    },
+    enabled: !!(project?.liveUrl),
+    staleTime: 1000 * 60 * 10, // Cache for 10 minutes
+  });
+
   if (!project) return null;
 
   const formatCurrency = (cents: number) => {
