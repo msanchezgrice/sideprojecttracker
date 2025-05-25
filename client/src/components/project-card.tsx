@@ -188,16 +188,13 @@ export default function ProjectCard({ project, rank }: ProjectCardProps) {
           
           <div>
             <p className="text-slate-600 text-sm mb-1">AI Updates</p>
-            <div className="flex items-center space-x-1">
-              {project.aiUpdates > 0 ? (
-                <>
-                  <div className="w-2 h-2 bg-purple-600 rounded-full animate-pulse" />
-                  <span className="text-sm text-slate-900">{project.aiUpdates} pending</span>
-                </>
-              ) : (
-                <span className="text-sm text-slate-500">None</span>
-              )}
-            </div>
+            <button 
+              onClick={() => setShowAIUpdates(true)}
+              className="flex items-center space-x-1 text-blue-600 hover:text-blue-800 transition-colors"
+            >
+              <Zap className="w-4 h-4" />
+              <span className="text-sm font-medium">{project.aiUpdates} pending</span>
+            </button>
           </div>
         </div>
         
@@ -256,6 +253,13 @@ export default function ProjectCard({ project, rank }: ProjectCardProps) {
         project={project}
         open={showDetail}
         onOpenChange={setShowDetail}
+      />
+      
+      <AIUpdatesDialog
+        open={showAIUpdates}
+        onOpenChange={setShowAIUpdates}
+        projectName={project.name}
+        updateCount={project.aiUpdates}
       />
     </>
   );
