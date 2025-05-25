@@ -1,6 +1,9 @@
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, LogOut } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -9,6 +12,18 @@ interface LayoutProps {
 
 export default function Layout({ children, onNewProject }: LayoutProps) {
   const [location] = useLocation();
+  const { toast } = useToast();
+
+  const logoutMutation = useMutation({
+    mutationFn: () => apiRequest("POST", "/api/auth/logout", {}),
+    onSuccess: () => {
+      toast({ title: "Logged out successfully" });
+      window.location.href = "/";
+    },
+    onError: () => {
+      toast({ title: "Logout failed", variant: "destructive" });
+    },
+  });
 
   const getNavLinkClass = (path: string) => {
     return location === path
@@ -27,7 +42,7 @@ export default function Layout({ children, onNewProject }: LayoutProps) {
                 <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
                   <i className="fas fa-trophy text-white text-sm"></i>
                 </div>
-                <h1 className="text-xl font-bold text-slate-900">ProjectRank</h1>
+                <h1 className="text-xl font-bold text-slate-900">SidePilot</h1>
               </Link>
               <nav className="hidden md:flex space-x-6">
                 <Link href="/" className={getNavLinkClass("/")}>Dashboard</Link>
@@ -46,7 +61,16 @@ export default function Layout({ children, onNewProject }: LayoutProps) {
                   New Project
                 </Button>
               )}
-              <div className="w-8 h-8 bg-slate-300 rounded-full" />
+              <Button 
+                variant="outline"
+                size="sm"
+                onClick={() => logoutMutation.mutate()}
+                disabled={logoutMutation.isPending}
+                className="flex items-center space-x-2"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>{logoutMutation.isPending ? "Logging out..." : "Logout"}</span>
+              </Button>
             </div>
           </div>
         </div>

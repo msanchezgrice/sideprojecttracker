@@ -20,7 +20,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const guestAccounts: Record<string, string> = {
         'guest@sidepilot.com': 'password123',
         'demo@doodad.ai': 'demo123',
-        'test@sidepilot.com': 'test123'
+        'test@sidepilot.com': 'test123',
+        'user1@sidepilot.com': 'user123',
+        'user2@sidepilot.com': 'user123',
+        'admin@doodad.ai': 'admin123',
+        'developer@sidepilot.com': 'dev123'
       };
       
       console.log("Available accounts:", Object.keys(guestAccounts));
@@ -74,9 +78,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Logout
   app.post('/api/auth/logout', (req, res) => {
-    req.session.destroy(() => {
+    if (req.session) {
+      req.session.destroy((err) => {
+        if (err) {
+          console.error("Logout error:", err);
+          return res.status(500).json({ message: "Logout failed" });
+        }
+        res.json({ success: true });
+      });
+    } else {
       res.json({ success: true });
-    });
+    }
   });
 
   // Get all projects with optional sorting

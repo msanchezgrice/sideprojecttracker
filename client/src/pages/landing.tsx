@@ -125,6 +125,10 @@ export default function Landing() {
                   <p>guest@sidepilot.com / password123</p>
                   <p>demo@doodad.ai / demo123</p>
                   <p>test@sidepilot.com / test123</p>
+                  <p>user1@sidepilot.com / user123</p>
+                  <p>user2@sidepilot.com / user123</p>
+                  <p>admin@doodad.ai / admin123</p>
+                  <p>developer@sidepilot.com / dev123</p>
                 </div>
               </CardContent>
             </Card>
