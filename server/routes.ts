@@ -239,7 +239,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Capture website screenshot
+  // Capture website screenshot or metadata
   app.get("/api/screenshot", async (req, res) => {
     try {
       const { url } = req.query;
@@ -255,31 +255,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid URL format" });
       }
 
-      const browser = await puppeteer.launch({
-        headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
-      });
-      
-      const page = await browser.newPage();
-      await page.setViewport({ width: 1200, height: 800 });
-      
-      // Set timeout and navigate
-      await page.goto(url, { 
-        waitUntil: 'networkidle2',
-        timeout: 10000 
-      });
-      
-      // Take screenshot
-      const screenshot = await page.screenshot({ 
-        type: 'png',
-        fullPage: false
-      });
-      
-      await browser.close();
-      
-      // Return screenshot as base64 data URL
-      const base64Screenshot = `data:image/png;base64,${screenshot.toString('base64')}`;
-      res.json({ screenshot: base64Screenshot });
+      // First try to get basic metadata by fetching the page HTML
+      try {
+        const response = await fetch(url, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (compatible; Doodad.ai Bot)'
+          },
+          timeout: 5000
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        
+        const html = await response.text();
+        
+        // Extract basic metadata
+        const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
+        const descriptionMatch = html.match(/<meta[^>]*name="description"[^>]*content="([^"]*)"[^>]*>/i);
+        const ogImageMatch = html.match(/<meta[^>]*property="og:image"[^>]*content="([^"]*)"[^>]*>/i);
+        
+        const metadata = {
+          title: titleMatch ? titleMatch[1].trim() : 'Website',
+          description: descriptionMatch ? descriptionMatch[1].trim() : '',
+          image: ogImageMatch ? ogImageMatch[1].trim() : null,
+          url: url
+        };
+        
+        // Return metadata instead of screenshot for now
+        res.json({ 
+          screenshot: null,
+          metadata: metadata,
+          message: "Metadata extracted successfully"
+        });
+        
+      } catch (fetchError) {
+        // If fetch fails, return a placeholder response
+        res.json({ 
+          screenshot: null,
+          metadata: {
+            title: new URL(url).hostname,
+            description: 'Website preview unavailable',
+            image: null,
+            url: url
+          },
+          message: "Unable to fetch website data"
+        });
+      }
       
     } catch (error) {
       console.error("Screenshot error:", error);
