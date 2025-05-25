@@ -16,9 +16,10 @@ import { useToast } from "@/hooks/use-toast";
 interface ProjectEditFormProps {
   project: Project;
   onSuccess: () => void;
+  onCancel?: () => void;
 }
 
-export default function ProjectEditForm({ project, onSuccess }: ProjectEditFormProps) {
+export default function ProjectEditForm({ project, onSuccess, onCancel }: ProjectEditFormProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -46,6 +47,7 @@ export default function ProjectEditForm({ project, onSuccess }: ProjectEditFormP
         description: "Your project has been successfully updated.",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/projects"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
       onSuccess();
     },
     onError: () => {
@@ -211,7 +213,7 @@ export default function ProjectEditForm({ project, onSuccess }: ProjectEditFormP
         </div>
 
         <div className="flex justify-end space-x-4">
-          <Button type="button" variant="outline" onClick={onSuccess}>
+          <Button type="button" variant="outline" onClick={onCancel}>
             Cancel
           </Button>
           <Button 

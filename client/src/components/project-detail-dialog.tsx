@@ -108,7 +108,8 @@ export default function ProjectDetailDialog({ project, open, onOpenChange }: Pro
               onSuccess={() => {
                 setIsEditing(false);
                 onOpenChange(false);
-              }} 
+              }}
+              onCancel={() => setIsEditing(false)}
             />
             <Button 
               variant="outline" 
