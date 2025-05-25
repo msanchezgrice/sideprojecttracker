@@ -42,7 +42,7 @@ export default function Layout({ children, onNewProject }: LayoutProps) {
                 <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
                   <i className="fas fa-trophy text-white text-sm"></i>
                 </div>
-                <h1 className="text-xl font-bold text-slate-900">SidePilot</h1>
+                <h1 className="text-xl font-bold text-slate-900">Doodad.ai</h1>
               </Link>
               <nav className="hidden md:flex space-x-6">
                 <Link href="/" className={getNavLinkClass("/")}>Dashboard</Link>

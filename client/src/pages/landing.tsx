@@ -22,7 +22,7 @@ export default function Landing() {
     mutationFn: (credentials: { email: string; password: string }) =>
       apiRequest("POST", "/api/auth/guest-login", credentials),
     onSuccess: () => {
-      toast({ title: "Welcome to SidePilot!", description: "Successfully logged in" });
+      toast({ title: "Welcome to Doodad.ai!", description: "Successfully logged in" });
       window.location.reload();
     },
     onError: () => {
@@ -42,7 +42,7 @@ export default function Landing() {
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Zap className="w-8 h-8 text-indigo-600" />
-            <span className="text-2xl font-bold text-gray-900">SidePilot</span>
+            <span className="text-2xl font-bold text-gray-900">Doodad.ai</span>
           </div>
           <Button onClick={handleGetStarted} variant="outline">
             Sign In
@@ -60,7 +60,7 @@ export default function Landing() {
           </h1>
           
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Tired of losing track of side projects or digging through scattered docs? SidePilot brings 
+            Tired of losing track of side projects or digging through scattered docs? Doodad.ai brings 
             everything together in one place, with an AI assistant to help your projects soar. It's the 
             ultimate control center for solo developers managing multiple code-based projects.
           </p>
@@ -97,7 +97,7 @@ export default function Landing() {
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Try: guest@sidepilot.com"
+                      placeholder="Try: guest@doodad.ai"
                       required
                     />
                   </div>
@@ -122,13 +122,13 @@ export default function Landing() {
                 </form>
                 <div className="mt-4 text-sm text-gray-600">
                   <p className="font-medium">Demo Accounts:</p>
-                  <p>guest@sidepilot.com / password123</p>
+                  <p>guest@doodad.ai / password123</p>
                   <p>demo@doodad.ai / demo123</p>
-                  <p>test@sidepilot.com / test123</p>
-                  <p>user1@sidepilot.com / user123</p>
-                  <p>user2@sidepilot.com / user123</p>
+                  <p>test@doodad.ai / test123</p>
+                  <p>user1@doodad.ai / user123</p>
+                  <p>user2@doodad.ai / user123</p>
                   <p>admin@doodad.ai / admin123</p>
-                  <p>developer@sidepilot.com / dev123</p>
+                  <p>developer@doodad.ai / dev123</p>
                 </div>
               </CardContent>
             </Card>
@@ -229,7 +229,7 @@ export default function Landing() {
             Ready to bring order to your project chaos?
           </h2>
           <p className="text-xl text-indigo-100 mb-8">
-            Start your free trial of SidePilot today and let your new co-pilot help you ship faster.
+            Start your free trial of Doodad.ai today and let your new co-pilot help you ship faster.
           </p>
           <Button 
             onClick={handleGetStarted}
