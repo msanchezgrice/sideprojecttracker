@@ -83,13 +83,42 @@ export default function ProjectDetailDialog({ project, open, onOpenChange }: Pro
         <DialogHeader>
           <div className="flex items-center justify-between">
             <DialogTitle className="text-2xl font-bold">{project.name}</DialogTitle>
-            {getStatusBadge(project.status)}
+            <div className="flex items-center space-x-2">
+              {getStatusBadge(project.status)}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsEditing(true)}
+                className="flex items-center space-x-1"
+              >
+                <Edit className="w-4 h-4" />
+                <span>Edit</span>
+              </Button>
+            </div>
           </div>
           <DialogDescription>
             {project.description}
           </DialogDescription>
         </DialogHeader>
 
+        {isEditing ? (
+          <div className="space-y-4">
+            <ProjectEditForm 
+              project={project} 
+              onSuccess={() => {
+                setIsEditing(false);
+                onOpenChange(false);
+              }} 
+            />
+            <Button 
+              variant="outline" 
+              onClick={() => setIsEditing(false)}
+              className="w-full"
+            >
+              Cancel
+            </Button>
+          </div>
+        ) : (
         <Tabs defaultValue="overview" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -307,6 +336,7 @@ export default function ProjectDetailDialog({ project, open, onOpenChange }: Pro
             </div>
           </TabsContent>
         </Tabs>
+        )}
       </DialogContent>
     </Dialog>
   );
