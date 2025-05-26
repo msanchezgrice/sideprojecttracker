@@ -99,10 +99,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get all projects with optional sorting
-  app.get("/api/projects", async (req: any, res) => {
+  app.get("/api/projects", requireAuth, async (req: any, res) => {
     try {
       const { sortBy = "lastActivity" } = req.query;
-      const userId = "test-user"; // Temporary for testing while we set up Clerk
+      const userId = req.user.id; // Get user ID from authenticated Clerk session
       const projects = await storage.getProjects(userId);
       
       // Sort projects based on the sortBy parameter

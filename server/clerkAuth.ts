@@ -15,9 +15,7 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
     }
 
     // Verify the session token with Clerk
-    const session = await clerkClient.sessions.verifySession(sessionToken, {
-      secretKey: process.env.CLERK_SECRET_KEY
-    });
+    const session = await clerkClient.sessions.verifySession(sessionToken, process.env.CLERK_SECRET_KEY!);
     
     if (!session || session.status !== 'active') {
       return res.status(401).json({ message: 'Invalid or expired session' });
