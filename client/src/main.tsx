@@ -7,15 +7,19 @@ import { ClerkProvider } from '@clerk/clerk-react';
 
 const queryClient = new QueryClient();
 
-// Use the Clerk publishable key from your Clerk dashboard
-const clerkPubKey = "pk_test_Y2hhcm1pbmctd2hpcHBldC01Ny5jbGVyay5hY2NvdW50cy5kZXYk";
+// Use the Clerk publishable key from environment variables
+const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
 if (!clerkPubKey) {
   throw new Error("Missing Clerk Publishable Key");
 }
 
 createRoot(document.getElementById("root")!).render(
-  <ClerkProvider publishableKey={clerkPubKey}>
+  <ClerkProvider 
+    publishableKey={clerkPubKey}
+    frontendApi="clerk.doodad.ai"
+    navigate={(to) => window.location.href = to}
+  >
     <QueryClientProvider client={queryClient}>
       <App />
       <Toaster />
