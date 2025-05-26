@@ -1,7 +1,7 @@
 import { clerkClient } from '@clerk/clerk-sdk-node';
 import type { Request, Response, NextFunction } from 'express';
 
-// Middleware to verify Clerk session tokens
+// Middleware to verify Clerk session tokens with custom claims
 export async function requireAuth(req: Request, res: Response, next: NextFunction) {
   try {
     // Get session token from Authorization header
@@ -14,15 +14,15 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
       return res.status(401).json({ message: 'No session token provided' });
     }
 
-    // Get session from Clerk using the session ID
-    const session = await clerkClient.sessions.getSession(sessionToken);
+    // Verify the JWT token and extract claims
+    const sessionClaims = await clerkClient.verifyToken(sessionToken);
     
-    if (!session || session.status !== 'active') {
-      return res.status(401).json({ message: 'Invalid or expired session' });
+    if (!sessionClaims || !sessionClaims.userId) {
+      return res.status(401).json({ message: 'Invalid session token' });
     }
 
-    // Get user information from Clerk
-    const user = await clerkClient.users.getUser(session.userId);
+    // Get user information from Clerk using the userId from claims
+    const user = await clerkClient.users.getUser(sessionClaims.userId);
     
     // Store user data in our database for consistency
     await req.app.locals.storage.upsertUser({
