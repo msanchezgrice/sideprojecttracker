@@ -7,41 +7,27 @@ async function throwIfResNotOk(res: Response) {
   }
 }
 
-// Global variable to store the token getter function
-let getTokenFunction: (() => Promise<string | null>) | null = null;
-
-// Function to set the token getter from React components
-export function setTokenGetter(tokenGetter: () => Promise<string | null>) {
-  getTokenFunction = tokenGetter;
-}
-
-// Helper to get Clerk session token
-async function getClerkToken(): Promise<string | null> {
-  console.log('getClerkToken called, tokenFunction exists:', !!getTokenFunction);
-  if (getTokenFunction) {
-    try {
-      const token = await getTokenFunction();
-      console.log('Got Clerk token:', token ? 'token received' : 'no token');
-      return token;
-    } catch (error) {
-      console.error('Error getting Clerk session token:', error);
-    }
-  } else {
-    console.log('Token getter not set');
-  }
-  return null;
-}
-
 export async function apiRequest(
   method: string,
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
-  const token = await getClerkToken();
-  const headers: Record<string, string> = {
+  // Use Clerk's global window object for authentication
+  let headers: Record<string, string> = {
     ...(data ? { "Content-Type": "application/json" } : {}),
-    ...(token ? { "Authorization": `Bearer ${token}` } : {}),
   };
+
+  // Get token from Clerk if available
+  if (typeof window !== 'undefined' && (window as any).Clerk?.session) {
+    try {
+      const token = await (window as any).Clerk.session.getToken();
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+    } catch (error) {
+      console.error('Error getting Clerk token:', error);
+    }
+  }
 
   const res = await fetch(url, {
     method,
@@ -60,10 +46,19 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const token = await getClerkToken();
-    const headers: Record<string, string> = {
-      ...(token ? { "Authorization": `Bearer ${token}` } : {}),
-    };
+    let headers: Record<string, string> = {};
+
+    // Get token from Clerk if available
+    if (typeof window !== 'undefined' && (window as any).Clerk?.session) {
+      try {
+        const token = await (window as any).Clerk.session.getToken();
+        if (token) {
+          headers.Authorization = `Bearer ${token}`;
+        }
+      } catch (error) {
+        console.error('Error getting Clerk token:', error);
+      }
+    }
 
     const res = await fetch(queryKey[0] as string, {
       headers,
