@@ -1,5 +1,12 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
+// Global token getter function - will be set by the App component
+let getTokenFn: (() => Promise<string | null>) | null = null;
+
+export function setTokenGetter(tokenGetter: () => Promise<string | null>) {
+  getTokenFn = tokenGetter;
+}
+
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
     const text = (await res.text()) || res.statusText;
@@ -17,12 +24,12 @@ export async function apiRequest(
     ...(data ? { "Content-Type": "application/json" } : {}),
   };
 
-  // Get token from Clerk if available
-  console.log('🔍 Frontend - Checking for Clerk token...');
-  if (typeof window !== 'undefined' && (window as any).Clerk?.session) {
+  // Get token from Clerk using the proper token getter
+  console.log('🔍 Frontend - Getting Clerk token...');
+  if (getTokenFn) {
     try {
-      console.log('📱 Clerk session found, getting token...');
-      const token = await (window as any).Clerk.session.getToken();
+      console.log('📱 Token getter available, requesting token...');
+      const token = await getTokenFn();
       console.log('🎫 Token received:', token ? 'Present (length: ' + token.length + ')' : 'Missing');
       if (token) {
         headers.Authorization = `Bearer ${token}`;
@@ -32,8 +39,7 @@ export async function apiRequest(
       console.error('❌ Error getting Clerk token:', error);
     }
   } else {
-    console.log('❌ No Clerk session found on window object');
-    console.log('Window Clerk object:', (window as any).Clerk ? 'Present' : 'Missing');
+    console.log('❌ No token getter function available');
   }
 
   const res = await fetch(url, {
@@ -55,12 +61,12 @@ export const getQueryFn: <T>(options: {
   async ({ queryKey }) => {
     let headers: Record<string, string> = {};
 
-    // Get token from Clerk if available
-    console.log('🔍 Query - Checking for Clerk token...');
-    if (typeof window !== 'undefined' && (window as any).Clerk?.session) {
+    // Get token from Clerk using the proper token getter
+    console.log('🔍 Query - Getting Clerk token...');
+    if (getTokenFn) {
       try {
-        console.log('📱 Query - Clerk session found, getting token...');
-        const token = await (window as any).Clerk.session.getToken();
+        console.log('📱 Query - Token getter available, requesting token...');
+        const token = await getTokenFn();
         console.log('🎫 Query - Token received:', token ? 'Present (length: ' + token.length + ')' : 'Missing');
         if (token) {
           headers.Authorization = `Bearer ${token}`;
@@ -70,7 +76,7 @@ export const getQueryFn: <T>(options: {
         console.error('❌ Query - Error getting Clerk token:', error);
       }
     } else {
-      console.log('❌ Query - No Clerk session found on window object');
+      console.log('❌ Query - No token getter function available');
     }
 
     const res = await fetch(queryKey[0] as string, {
