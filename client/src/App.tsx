@@ -39,7 +39,7 @@ function Router() {
 
   return (
     <Switch>
-      {!isAuthenticated ? (
+      {!isSignedIn ? (
         <>
           <Route path="/" component={Landing} />
           <Route path="/onboarding" component={Onboarding} />
