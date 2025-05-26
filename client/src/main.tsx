@@ -7,8 +7,8 @@ import { ClerkProvider } from '@clerk/clerk-react';
 
 const queryClient = new QueryClient();
 
-// Use the Clerk publishable key that matches the current domain
-const clerkPubKey = "pk_test_YWRhcHRlZC1waWdlb24tMjIuY2xlcmsuYWNjb3VudHMuZGV2JA";
+// Use the Clerk publishable key from your Clerk dashboard
+const clerkPubKey = "pk_test_Y2hhcm1pbmctd2hpcHBldC01Ny5jbGVyay5hY2NvdW50cy5kZXYk";
 
 if (!clerkPubKey) {
   throw new Error("Missing Clerk Publishable Key");
