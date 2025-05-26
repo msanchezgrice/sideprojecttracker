@@ -75,9 +75,9 @@ export default function Layout({ children, onNewProject }: LayoutProps) {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={user?.profileImageUrl || ""} alt={user?.email || ""} />
+                      <AvatarImage src={user?.imageUrl || ""} alt={user?.primaryEmailAddress?.emailAddress || ""} />
                       <AvatarFallback>
-                        {user?.firstName?.[0] || user?.email?.[0]?.toUpperCase() || "U"}
+                        {user?.firstName?.[0] || user?.primaryEmailAddress?.emailAddress?.[0]?.toUpperCase() || "U"}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
@@ -88,10 +88,10 @@ export default function Layout({ children, onNewProject }: LayoutProps) {
                       <p className="text-sm font-medium leading-none">
                         {user?.firstName && user?.lastName 
                           ? `${user.firstName} ${user.lastName}` 
-                          : user?.email?.split('@')[0] || 'User'}
+                          : user?.primaryEmailAddress?.emailAddress?.split('@')[0] || 'User'}
                       </p>
                       <p className="text-xs leading-none text-muted-foreground">
-                        {user?.email}
+                        {user?.primaryEmailAddress?.emailAddress}
                       </p>
                     </div>
                   </DropdownMenuLabel>
@@ -104,12 +104,11 @@ export default function Layout({ children, onNewProject }: LayoutProps) {
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem 
-                    onClick={() => logoutMutation.mutate()}
-                    disabled={logoutMutation.isPending}
+                    onClick={handleLogout}
                     className="flex items-center cursor-pointer"
                   >
                     <LogOut className="mr-2 h-4 w-4" />
-                    <span>{logoutMutation.isPending ? "Logging out..." : "Log out"}</span>
+                    <span>Log out</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
