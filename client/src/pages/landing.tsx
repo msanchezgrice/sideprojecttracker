@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, BarChart, Bot, DollarSign, GitBranch, Zap } from "lucide-react";
-import { SignInButton, SignUpButton } from "@clerk/clerk-react";
 
 export default function Landing() {
   return (
@@ -18,12 +17,15 @@ export default function Landing() {
             </span>
           </div>
           <div className="flex items-center space-x-3">
-            <SignInButton mode="modal">
-              <Button variant="ghost">Sign In</Button>
-            </SignInButton>
-            <SignUpButton mode="modal">
-              <Button>Get Started <ArrowRight className="ml-2 h-4 w-4" /></Button>
-            </SignUpButton>
+            <Button 
+              variant="ghost" 
+              onClick={() => window.location.href = 'https://accounts.doodad.ai/sign-in'}
+            >
+              Sign In
+            </Button>
+            <Button onClick={() => window.location.href = 'https://accounts.doodad.ai/sign-up'}>
+              Get Started <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
           </div>
         </div>
       </header>
@@ -42,16 +44,20 @@ export default function Landing() {
             Track progress, optimize costs, and get AI-powered insights across all your coding projects.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <SignUpButton mode="modal">
-              <Button size="lg" className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700">
-                Start Building <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </SignUpButton>
-            <SignInButton mode="modal">
-              <Button size="lg" variant="outline">
-                Sign In
-              </Button>
-            </SignInButton>
+            <Button 
+              size="lg" 
+              className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
+              onClick={() => window.location.href = 'https://accounts.doodad.ai/sign-up'}
+            >
+              Start Building <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+            <Button 
+              size="lg" 
+              variant="outline"
+              onClick={() => window.location.href = 'https://accounts.doodad.ai/sign-in'}
+            >
+              Sign In
+            </Button>
           </div>
         </div>
       </section>
@@ -139,11 +145,14 @@ export default function Landing() {
           <p className="text-xl text-indigo-100 mb-8 max-w-2xl mx-auto">
             Join developers who are already using Doodad.ai to stay organized and ship faster.
           </p>
-          <SignUpButton mode="modal">
-            <Button size="lg" variant="secondary" className="bg-white text-indigo-600 hover:bg-gray-50">
-              Get Started Free <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </SignUpButton>
+          <Button 
+            size="lg" 
+            variant="secondary" 
+            className="bg-white text-indigo-600 hover:bg-gray-50"
+            onClick={() => window.location.href = 'https://accounts.doodad.ai/sign-up'}
+          >
+            Get Started Free <ArrowRight className="ml-2 h-5 w-5" />
+          </Button>
         </div>
       </section>
 
