@@ -11,13 +11,21 @@ async function throwIfResNotOk(res: Response) {
 async function getClerkToken(): Promise<string | null> {
   if (typeof window !== 'undefined' && (window as any).Clerk) {
     try {
-      const session = (window as any).Clerk.session;
-      if (session) {
-        return await session.getToken();
+      const clerk = (window as any).Clerk;
+      await clerk.load();
+      
+      if (clerk.session) {
+        const token = await clerk.session.getToken();
+        console.log('Got Clerk token:', token ? 'token received' : 'no token');
+        return token;
+      } else {
+        console.log('No active Clerk session');
       }
     } catch (error) {
       console.error('Error getting Clerk session token:', error);
     }
+  } else {
+    console.log('Clerk not available on window');
   }
   return null;
 }

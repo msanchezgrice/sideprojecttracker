@@ -146,10 +146,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Create a new project
-  app.post("/api/projects", async (req: any, res) => {
+  app.post("/api/projects", requireAuth, async (req: any, res) => {
     try {
       const validatedData = insertProjectSchema.parse(req.body);
-      const userId = "test-user"; // Temporary for testing while we set up Clerk
+      const userId = req.user.id; // Use actual Clerk user ID
       const project = await storage.createProject(validatedData, userId);
       res.status(201).json(project);
     } catch (error) {
@@ -159,6 +159,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           errors: error.errors 
         });
       }
+      console.error("Project creation error:", error);
       res.status(500).json({ message: "Failed to create project" });
     }
   });
