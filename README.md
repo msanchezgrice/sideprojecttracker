@@ -15,9 +15,9 @@ A gamified project management platform that transforms team collaboration into a
 
 - **Frontend**: React.js + TypeScript + Tailwind CSS
 - **Backend**: Express.js + Node.js
-- **Database**: PostgreSQL with Drizzle ORM
+- **Database**: PostgreSQL with Supabase
 - **Authentication**: Clerk
-- **Deployment**: Vercel
+- **Deployment**: Self-hosted or cloud platforms
 
 ## Environment Variables
 
@@ -39,10 +39,6 @@ CLERK_AFTER_SIGN_UP_URL=/onboarding
 npm install
 npm run dev
 ```
-
-## Deployment
-
-This project is configured for deployment on Vercel with automatic builds from the main branch.
 
 ## License
 

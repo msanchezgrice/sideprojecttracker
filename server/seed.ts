@@ -13,7 +13,7 @@ async function seedDatabase() {
       monthlyCost: 24700, // $247.00 in cents
       aiUpdates: 3,
       githubUrl: "https://github.com/vibecodehq/vibecrm",
-      liveUrl: "https://vibecrm-demo.vercel.app",
+      liveUrl: "https://vibecrm.doodad.ai",
       docsUrl: "https://docs.vibecrm.com",
     },
     {
