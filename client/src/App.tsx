@@ -1,3 +1,4 @@
+import React from "react";
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -6,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { useUser } from "@clerk/clerk-react";
 import { useQuery } from "@tanstack/react-query";
 import { Project } from "@shared/schema";
+import { useLocation } from "wouter";
 import Dashboard from "@/pages/dashboard";
 import Projects from "@/pages/projects";
 import Analytics from "@/pages/analytics";
@@ -18,6 +20,15 @@ import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/clerk-react";
 
 function Router() {
   const { isSignedIn, isLoaded, user } = useUser();
+  const [location, setLocation] = useLocation();
+  
+  // Add refresh functionality for stuck states
+  React.useEffect(() => {
+    if (isSignedIn && location.includes('__clerk_handshake')) {
+      // If we're stuck on handshake URL, redirect to dashboard
+      setLocation('/dashboard');
+    }
+  }, [isSignedIn, location, setLocation]);
   
   // Check if user has projects to determine if they need onboarding
   const { data: projects = [], isLoading: projectsLoading } = useQuery<Project[]>({
@@ -27,12 +38,19 @@ function Router() {
   
   const needsOnboarding = false; // Disable onboarding redirect for now
 
-  if (!isLoaded || projectsLoading) {
+  if (!isLoaded) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading SidePilot...</p>
+          <p className="text-gray-600">Loading...</p>
+          {/* Add refresh button for stuck states */}
+          <button 
+            onClick={() => window.location.href = "/"} 
+            className="mt-4 text-sm text-indigo-600 hover:text-indigo-800 underline"
+          >
+            Having trouble? Go to landing page
+          </button>
         </div>
       </div>
     );
