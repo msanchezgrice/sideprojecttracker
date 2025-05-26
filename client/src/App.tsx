@@ -3,7 +3,7 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { useAuth } from "@/hooks/useAuth";
+import { useUser } from "@clerk/clerk-react";
 import { useQuery } from "@tanstack/react-query";
 import { Project } from "@shared/schema";
 import Dashboard from "@/pages/dashboard";
@@ -16,17 +16,17 @@ import NotFound from "@/pages/not-found";
 import Layout from "@/components/layout";
 
 function Router() {
-  const { isAuthenticated, isLoading, user } = useAuth();
+  const { isSignedIn, isLoaded, user } = useUser();
   
   // Check if user has projects to determine if they need onboarding
   const { data: projects = [], isLoading: projectsLoading } = useQuery<Project[]>({
     queryKey: ["/api/projects"],
-    enabled: isAuthenticated,
+    enabled: isSignedIn,
   });
   
   const needsOnboarding = false; // Disable onboarding redirect for now
 
-  if (isLoading || projectsLoading) {
+  if (!isLoaded || projectsLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center">
         <div className="text-center">
