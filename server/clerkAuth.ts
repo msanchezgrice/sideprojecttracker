@@ -4,13 +4,22 @@ import type { Request, Response, NextFunction } from 'express';
 // Middleware to verify Clerk session tokens with custom claims
 export async function requireAuth(req: Request, res: Response, next: NextFunction) {
   try {
+    console.log('🔍 Auth middleware - Headers:', {
+      authorization: req.headers.authorization ? 'Present' : 'Missing',
+      userAgent: req.headers['user-agent'],
+      url: req.url
+    });
+    
     // Get session token from Authorization header
     const authHeader = req.headers.authorization;
     const sessionToken = authHeader?.startsWith('Bearer ') 
       ? authHeader.substring(7)
       : null;
     
+    console.log('🔑 Session token:', sessionToken ? 'Present (length: ' + sessionToken.length + ')' : 'Missing');
+    
     if (!sessionToken) {
+      console.log('❌ No session token provided');
       return res.status(401).json({ message: 'No session token provided' });
     }
 

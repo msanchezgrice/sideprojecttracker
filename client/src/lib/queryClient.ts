@@ -18,15 +18,22 @@ export async function apiRequest(
   };
 
   // Get token from Clerk if available
+  console.log('🔍 Frontend - Checking for Clerk token...');
   if (typeof window !== 'undefined' && (window as any).Clerk?.session) {
     try {
+      console.log('📱 Clerk session found, getting token...');
       const token = await (window as any).Clerk.session.getToken();
+      console.log('🎫 Token received:', token ? 'Present (length: ' + token.length + ')' : 'Missing');
       if (token) {
         headers.Authorization = `Bearer ${token}`;
+        console.log('✅ Authorization header set');
       }
     } catch (error) {
-      console.error('Error getting Clerk token:', error);
+      console.error('❌ Error getting Clerk token:', error);
     }
+  } else {
+    console.log('❌ No Clerk session found on window object');
+    console.log('Window Clerk object:', (window as any).Clerk ? 'Present' : 'Missing');
   }
 
   const res = await fetch(url, {
@@ -49,15 +56,21 @@ export const getQueryFn: <T>(options: {
     let headers: Record<string, string> = {};
 
     // Get token from Clerk if available
+    console.log('🔍 Query - Checking for Clerk token...');
     if (typeof window !== 'undefined' && (window as any).Clerk?.session) {
       try {
+        console.log('📱 Query - Clerk session found, getting token...');
         const token = await (window as any).Clerk.session.getToken();
+        console.log('🎫 Query - Token received:', token ? 'Present (length: ' + token.length + ')' : 'Missing');
         if (token) {
           headers.Authorization = `Bearer ${token}`;
+          console.log('✅ Query - Authorization header set');
         }
       } catch (error) {
-        console.error('Error getting Clerk token:', error);
+        console.error('❌ Query - Error getting Clerk token:', error);
       }
+    } else {
+      console.log('❌ Query - No Clerk session found on window object');
     }
 
     const res = await fetch(queryKey[0] as string, {
