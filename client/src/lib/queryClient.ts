@@ -7,14 +7,14 @@ async function throwIfResNotOk(res: Response) {
   }
 }
 
-// Helper to get Clerk session token
+// Helper to get Clerk session ID
 async function getClerkToken(): Promise<string | null> {
   if (typeof window !== 'undefined' && (window as any).Clerk) {
     try {
-      const session = await (window as any).Clerk.session;
-      return session?.getToken() || null;
+      const session = (window as any).Clerk.session;
+      return session?.id || null;
     } catch (error) {
-      console.error('Error getting Clerk token:', error);
+      console.error('Error getting Clerk session:', error);
       return null;
     }
   }

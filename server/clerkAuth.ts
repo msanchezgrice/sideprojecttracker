@@ -4,18 +4,18 @@ import type { Request, Response, NextFunction } from 'express';
 // Middleware to verify Clerk session tokens
 export async function requireAuth(req: Request, res: Response, next: NextFunction) {
   try {
-    // Get session token from Authorization header or __session cookie
+    // Get session token from Authorization header
     const authHeader = req.headers.authorization;
     const sessionToken = authHeader?.startsWith('Bearer ') 
       ? authHeader.substring(7)
-      : req.cookies?.__session;
+      : null;
     
     if (!sessionToken) {
       return res.status(401).json({ message: 'No session token provided' });
     }
 
-    // Verify the session token with Clerk
-    const session = await clerkClient.sessions.verifySession(sessionToken, process.env.CLERK_SECRET_KEY!);
+    // Get session from Clerk using the session ID
+    const session = await clerkClient.sessions.getSession(sessionToken);
     
     if (!session || session.status !== 'active') {
       return res.status(401).json({ message: 'Invalid or expired session' });
