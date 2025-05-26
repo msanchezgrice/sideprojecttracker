@@ -24,7 +24,7 @@ function Router() {
     enabled: isAuthenticated,
   });
   
-  const needsOnboarding = isAuthenticated && !projectsLoading && projects.length === 0;
+  const needsOnboarding = false; // Disable onboarding redirect for now
 
   if (isLoading || projectsLoading) {
     return (
