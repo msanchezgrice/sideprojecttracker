@@ -30,10 +30,12 @@ export async function apiRequest(
     try {
       console.log('📱 Token getter available, requesting token...');
       const token = await getTokenFn();
-      console.log('🎫 Token received:', token ? 'Present (length: ' + token.length + ')' : 'Missing');
+      console.log('🎫 Token received:', token ? 'Present (length: ' + token.length + ')' : 'Missing or null');
       if (token) {
         headers.Authorization = `Bearer ${token}`;
         console.log('✅ Authorization header set');
+      } else {
+        console.log('⚠️ Token is null - user might not be signed in yet');
       }
     } catch (error) {
       console.error('❌ Error getting Clerk token:', error);
@@ -71,6 +73,8 @@ export const getQueryFn: <T>(options: {
         if (token) {
           headers.Authorization = `Bearer ${token}`;
           console.log('✅ Query - Authorization header set');
+        } else {
+          console.log('⚠️ Query - Token is null - user might not be signed in yet');
         }
       } catch (error) {
         console.error('❌ Query - Error getting Clerk token:', error);
