@@ -4,10 +4,11 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { useUser } from "@clerk/clerk-react";
+import { useUser, useAuth } from "@clerk/clerk-react";
 import { useQuery } from "@tanstack/react-query";
 import { Project } from "@shared/schema";
 import { useLocation } from "wouter";
+import { setTokenGetter } from "./lib/queryClient";
 import Dashboard from "@/pages/dashboard";
 import Projects from "@/pages/projects";
 import Analytics from "@/pages/analytics";
@@ -20,7 +21,13 @@ import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/clerk-react";
 
 function Router() {
   const { isSignedIn, isLoaded, user } = useUser();
+  const { getToken } = useAuth();
   const [location, setLocation] = useLocation();
+  
+  // Set up the token getter for API calls
+  React.useEffect(() => {
+    setTokenGetter(getToken);
+  }, [getToken]);
   
   // Add refresh functionality for stuck states
   React.useEffect(() => {

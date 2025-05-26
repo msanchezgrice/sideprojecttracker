@@ -1,5 +1,4 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
-import { useAuth } from "@clerk/clerk-react";
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
@@ -8,25 +7,26 @@ async function throwIfResNotOk(res: Response) {
   }
 }
 
+// Global variable to store the token getter function
+let getTokenFunction: (() => Promise<string | null>) | null = null;
+
+// Function to set the token getter from React components
+export function setTokenGetter(tokenGetter: () => Promise<string | null>) {
+  getTokenFunction = tokenGetter;
+}
+
 // Helper to get Clerk session token
 async function getClerkToken(): Promise<string | null> {
-  if (typeof window !== 'undefined' && (window as any).Clerk) {
+  if (getTokenFunction) {
     try {
-      const clerk = (window as any).Clerk;
-      await clerk.load();
-      
-      if (clerk.session) {
-        const token = await clerk.session.getToken();
-        console.log('Got Clerk token:', token ? 'token received' : 'no token');
-        return token;
-      } else {
-        console.log('No active Clerk session');
-      }
+      const token = await getTokenFunction();
+      console.log('Got Clerk token:', token ? 'token received' : 'no token');
+      return token;
     } catch (error) {
       console.error('Error getting Clerk session token:', error);
     }
   } else {
-    console.log('Clerk not available on window');
+    console.log('Token getter not set');
   }
   return null;
 }
