@@ -4,7 +4,7 @@ import { Plus, LogOut, User, Settings } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { useUser, UserButton } from "@clerk/clerk-react";
+import { useUser, UserButton, useClerk } from "@clerk/clerk-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,18 +23,17 @@ interface LayoutProps {
 export default function Layout({ children, onNewProject }: LayoutProps) {
   const [location] = useLocation();
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user } = useUser();
+  const { signOut } = useClerk();
 
-  const logoutMutation = useMutation({
-    mutationFn: () => apiRequest("POST", "/api/auth/logout", {}),
-    onSuccess: () => {
+  const handleLogout = async () => {
+    try {
+      await signOut();
       toast({ title: "Logged out successfully" });
-      window.location.href = "/";
-    },
-    onError: () => {
+    } catch (error) {
       toast({ title: "Logout failed", variant: "destructive" });
-    },
-  });
+    }
+  };
 
   const getNavLinkClass = (path: string) => {
     return location === path
