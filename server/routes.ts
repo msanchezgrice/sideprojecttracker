@@ -92,10 +92,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get all projects with optional sorting
-  app.get("/api/projects", isAuthenticated, async (req: any, res) => {
+  app.get("/api/projects", async (req: any, res) => {
     try {
       const { sortBy = "lastActivity" } = req.query;
-      const userId = req.user?.claims?.sub || (req.session as any)?.user?.id;
+      const userId = "test-user"; // Temporary for testing while we set up Clerk
       const projects = await storage.getProjects(userId);
       
       // Sort projects based on the sortBy parameter
@@ -139,10 +139,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Create a new project
-  app.post("/api/projects", isAuthenticated, async (req: any, res) => {
+  app.post("/api/projects", async (req: any, res) => {
     try {
       const validatedData = insertProjectSchema.parse(req.body);
-      const userId = req.user.claims.sub;
+      const userId = "test-user"; // Temporary for testing while we set up Clerk
       const project = await storage.createProject(validatedData, userId);
       res.status(201).json(project);
     } catch (error) {
