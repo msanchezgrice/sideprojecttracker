@@ -7,8 +7,8 @@ import { setupAuth, isAuthenticated } from "./replitAuth";
 import puppeteer from "puppeteer";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Auth middleware
-  await setupAuth(app);
+  // Auth middleware - temporarily disabled while setting up Clerk
+  // await setupAuth(app);
 
   // Simple guest login for testing
   app.post('/api/auth/guest-login', async (req, res) => {
