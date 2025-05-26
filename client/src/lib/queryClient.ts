@@ -1,4 +1,5 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
+import { useAuth } from "@clerk/clerk-react";
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
