@@ -17,8 +17,6 @@ if (!clerkPubKey) {
 createRoot(document.getElementById("root")!).render(
   <ClerkProvider 
     publishableKey={clerkPubKey}
-    frontendApi="clerk.doodad.ai"
-    navigate={(to) => window.location.href = to}
   >
     <QueryClientProvider client={queryClient}>
       <App />
