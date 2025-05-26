@@ -92,10 +92,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get all projects with optional sorting
-  app.get("/api/projects", async (req, res) => {
+  app.get("/api/projects", isAuthenticated, async (req: any, res) => {
     try {
       const { sortBy = "lastActivity" } = req.query;
-      const projects = await storage.getProjects();
+      const userId = req.user?.claims?.sub || (req.session as any)?.user?.id;
+      const projects = await storage.getProjects(userId);
       
       // Sort projects based on the sortBy parameter
       const sortedProjects = projects.sort((a, b) => {

@@ -146,8 +146,12 @@ export class MemStorage implements IStorage {
     });
   }
 
-  async getProjects(): Promise<Project[]> {
-    return Array.from(this.projects.values());
+  async getProjects(userId?: string): Promise<Project[]> {
+    const allProjects = Array.from(this.projects.values());
+    if (userId) {
+      return allProjects.filter(project => project.userId === userId);
+    }
+    return allProjects;
   }
 
   async getProject(id: number): Promise<Project | undefined> {
