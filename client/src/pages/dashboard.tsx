@@ -20,11 +20,6 @@ export default function Dashboard() {
 
   const { data: projects = [], isLoading } = useQuery<Project[]>({
     queryKey: ["/api/projects", sortBy],
-    queryFn: async () => {
-      const response = await fetch(`/api/projects?sortBy=${sortBy}`);
-      if (!response.ok) throw new Error('Failed to fetch projects');
-      return response.json();
-    },
   });
 
   const filteredProjects = projects.filter(project =>

@@ -17,6 +17,7 @@ export function setTokenGetter(tokenGetter: () => Promise<string | null>) {
 
 // Helper to get Clerk session token
 async function getClerkToken(): Promise<string | null> {
+  console.log('getClerkToken called, tokenFunction exists:', !!getTokenFunction);
   if (getTokenFunction) {
     try {
       const token = await getTokenFunction();
