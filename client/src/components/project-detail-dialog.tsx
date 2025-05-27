@@ -111,13 +111,6 @@ export default function ProjectDetailDialog({ project, open, onOpenChange }: Pro
               }}
               onCancel={() => setIsEditing(false)}
             />
-            <Button 
-              variant="outline" 
-              onClick={() => setIsEditing(false)}
-              className="w-full"
-            >
-              Cancel
-            </Button>
           </div>
         ) : (
         <Tabs defaultValue="overview" className="w-full">

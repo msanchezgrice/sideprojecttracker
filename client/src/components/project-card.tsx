@@ -240,9 +240,7 @@ export default function ProjectCard({ project, rank }: ProjectCardProps) {
               disabled={updateActivityMutation.isPending || project.status === "blocked"}
               className="bg-indigo-600 hover:bg-indigo-700"
             >
-              {project.status === "planning" ? "Start Project" : 
-               project.status === "paused" ? "Resume Work" : 
-               project.status === "blocked" ? "Blocked" : "Open Project"}
+              {project.status === "blocked" ? "Blocked" : "Open Project"}
             </Button>
           </div>
         </div>

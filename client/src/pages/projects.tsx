@@ -15,6 +15,7 @@ export default function Projects() {
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [activeTab, setActiveTab] = useState<string>("overview");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
 
@@ -22,12 +23,28 @@ export default function Projects() {
     queryKey: ["/api/projects"],
   });
 
-  const filteredProjects = projects.filter(project => {
-    const matchesSearch = project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         project.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = statusFilter === "all" || project.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+  const getFilteredProjects = (tabFilter?: string) => {
+    return projects.filter(project => {
+      const matchesSearch = project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           project.description.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      // Apply tab-specific filtering
+      let matchesTab = true;
+      if (tabFilter === "active") {
+        matchesTab = project.status === "active";
+      } else if (tabFilter === "archived") {
+        matchesTab = project.status === "completed";
+      } else if (tabFilter === "overview") {
+        // For overview tab, apply the status filter buttons
+        const matchesStatus = statusFilter === "all" || project.status === statusFilter;
+        matchesTab = matchesStatus;
+      }
+      
+      return matchesSearch && matchesTab;
+    });
+  };
+
+  const filteredProjects = getFilteredProjects(activeTab);
 
   const formatCurrency = (cents: number) => {
     return `$${(cents / 100).toLocaleString()}`;
@@ -119,7 +136,7 @@ export default function Projects() {
         </div>
 
         {/* Projects Grid/List */}
-        <Tabs defaultValue="overview" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList>
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="active">Active ({projects.filter(p => p.status === "active").length})</TabsTrigger>
@@ -212,6 +229,17 @@ export default function Projects() {
                         <div className="w-32">
                           <Progress value={project.progress} />
                         </div>
+                        <div className="ml-4">
+                          <Button 
+                            size="sm" 
+                            onClick={() => {
+                              setSelectedProject(project);
+                              setDetailDialogOpen(true);
+                            }}
+                          >
+                            Open Project
+                          </Button>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -222,7 +250,7 @@ export default function Projects() {
 
           <TabsContent value="active" className="mt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {projects.filter(p => p.status === "active").map((project) => (
+              {getFilteredProjects("active").map((project) => (
                 <Card key={project.id} className="border-emerald-200 bg-emerald-50/30">
                   <CardHeader>
                     <CardTitle className="text-lg text-emerald-900">{project.name}</CardTitle>
@@ -235,6 +263,16 @@ export default function Projects() {
                         <span className="text-emerald-700">{project.progress}% Complete</span>
                         <span className="text-emerald-700">{formatCurrency(project.monthlyCost)}/mo</span>
                       </div>
+                      <Button 
+                        size="sm" 
+                        onClick={() => {
+                          setSelectedProject(project);
+                          setDetailDialogOpen(true);
+                        }}
+                        className="w-full bg-emerald-600 hover:bg-emerald-700"
+                      >
+                        Open Project
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -244,7 +282,7 @@ export default function Projects() {
 
           <TabsContent value="archived" className="mt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {projects.filter(p => p.status === "completed").map((project) => (
+              {getFilteredProjects("archived").map((project) => (
                 <Card key={project.id} className="border-blue-200 bg-blue-50/30">
                   <CardHeader>
                     <CardTitle className="text-lg text-blue-900">{project.name}</CardTitle>
@@ -259,6 +297,16 @@ export default function Projects() {
                           {new Date(project.lastActivity).toLocaleDateString()}
                         </span>
                       </div>
+                      <Button 
+                        size="sm" 
+                        onClick={() => {
+                          setSelectedProject(project);
+                          setDetailDialogOpen(true);
+                        }}
+                        className="w-full bg-blue-600 hover:bg-blue-700"
+                      >
+                        View Project
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>

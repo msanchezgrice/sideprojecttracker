@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { useAuth } from "@/hooks/useAuth";
+import { useUser } from "@clerk/clerk-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
 import Layout from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,7 +28,15 @@ import {
 } from "lucide-react";
 
 export default function Settings() {
-  const { user } = useAuth();
+  const { user } = useUser();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  
+  const [profileData, setProfileData] = useState({
+    fullName: user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() : '',
+    email: user?.primaryEmailAddress?.emailAddress || '',
+    bio: ''
+  });
   
   const [notifications, setNotifications] = useState({
     projectUpdates: true,
@@ -41,6 +51,32 @@ export default function Settings() {
     sortBy: "lastActivity",
     currency: "USD"
   });
+
+  const updateProfileMutation = useMutation({
+    mutationFn: async (data: typeof profileData) => {
+      // Update Clerk user profile
+      if (user) {
+        const [firstName, ...lastNameParts] = data.fullName.split(' ');
+        const lastName = lastNameParts.join(' ');
+        await user.update({
+          firstName: firstName || '',
+          lastName: lastName || '',
+        });
+      }
+      return data;
+    },
+    onSuccess: () => {
+      toast({ title: "Profile updated successfully!" });
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+    },
+    onError: () => {
+      toast({ title: "Failed to update profile", variant: "destructive" });
+    },
+  });
+
+  const handleProfileUpdate = () => {
+    updateProfileMutation.mutate(profileData);
+  };
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -74,7 +110,8 @@ export default function Settings() {
                     <Input 
                       id="name" 
                       placeholder="Your full name" 
-                      defaultValue={user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Not provided' : ''} 
+                      value={profileData.fullName}
+                      onChange={(e) => setProfileData(prev => ({ ...prev, fullName: e.target.value }))}
                     />
                   </div>
                   <div className="space-y-2">
@@ -83,15 +120,25 @@ export default function Settings() {
                       id="email" 
                       type="email" 
                       placeholder="your@email.com" 
-                      defaultValue={user?.email || ''} 
+                      value={profileData.email}
+                      disabled
+                      className="bg-slate-50 text-slate-500"
                     />
+                    <p className="text-xs text-slate-500">Email cannot be changed here. Please update it in your account settings.</p>
                   </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="bio">Bio</Label>
-                  <Input id="bio" placeholder="Tell us about yourself" defaultValue="" />
+                  <Input 
+                    id="bio" 
+                    placeholder="Tell us about yourself" 
+                    value={profileData.bio}
+                    onChange={(e) => setProfileData(prev => ({ ...prev, bio: e.target.value }))}
+                  />
                 </div>
-                <Button>Update Profile</Button>
+                <Button onClick={handleProfileUpdate} disabled={updateProfileMutation.isPending}>
+                  {updateProfileMutation.isPending ? "Updating..." : "Update Profile"}
+                </Button>
               </CardContent>
             </Card>
 
